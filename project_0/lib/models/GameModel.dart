@@ -1,9 +1,10 @@
-class Gamemodel {
+class GameModel {
 
   int id;
   String name;
   String released;
   bool announced;
+  String backgroundImage;
   double rating;
   List<Map<String, dynamic>> ratings;
   int ratingsCount;
@@ -21,11 +22,12 @@ class Gamemodel {
   List<Map<String, dynamic>> tags;
   bool saved;
 
-  Gamemodel({
+  GameModel({
     required this.id,
     required this.name,
     required this.released,
     required this.announced,
+    required this.backgroundImage,
     required this.rating,
     required this.ratings,
     required this.ratingsCount,
@@ -43,12 +45,13 @@ class Gamemodel {
     required this.tags,
     this.saved = false, // Default value for saved
   });
-  factory Gamemodel.fromJson(Map<String, dynamic> json) {
-    return Gamemodel(
+  factory GameModel.fromJson(Map<String, dynamic> json) {
+    return GameModel(
       id: json['id'],
       name: json['name'],
       released: json['released'],
       announced: json['announced'] ?? false,
+      backgroundImage: json["backgroundImage"] ?? "",
       rating: (json['rating'] as num).toDouble(),
       ratings: List<Map<String, dynamic>>.from(json['ratings']),
       ratingsCount: json['ratings_count'],
