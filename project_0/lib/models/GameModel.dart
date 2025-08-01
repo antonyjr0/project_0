@@ -42,5 +42,29 @@ class Gamemodel {
     required this.stores,
     required this.tags,
     this.saved = false, // Default value for saved
-  }); 
+  });
+  factory Gamemodel.fromJson(Map<String, dynamic> json) {
+    return Gamemodel(
+      id: json['id'],
+      name: json['name'],
+      released: json['released'],
+      announced: json['announced'] ?? false,
+      rating: (json['rating'] as num).toDouble(),
+      ratings: List<Map<String, dynamic>>.from(json['ratings']),
+      ratingsCount: json['ratings_count'],
+      added: json['added'],
+      addedByStatus: Map<String, int>.from(json['added_by_status']),
+      metacritic: json['metacritic'] ?? 0,
+      playtime: json['playtime'] ?? 0,
+      suggestionsCount: json['suggestions_count'] ?? 0,
+      updated: json['updated'],
+      reviewsCount: json['reviews_count'] ?? 0,
+      platforms: List<Map<String, dynamic>>.from(json['platforms']),
+      parentPlatforms: List<Map<String, dynamic>>.from(json['parent_platforms']),
+      genres: List<Map<String, dynamic>>.from(json['genres']),
+      stores: List<Map<String, dynamic>>.from(json['stores']),
+      tags: List<Map<String, dynamic>>.from(json['tags']),
+      saved: false,
+    );
+  }
 }
