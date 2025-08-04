@@ -6,64 +6,64 @@ part 'GameModel.g.dart';
 class GameModel extends HiveObject {
   @HiveField(0)
   int _id;
-  
+
   @HiveField(1)
   String _name;
-  
+
   @HiveField(2)
   String _released;
-  
+
   @HiveField(3)
   bool _announced;
-  
+
   @HiveField(4)
   String _backgroundImage;
-  
+
   @HiveField(5)
   double _rating;
-  
+
   @HiveField(6)
   List<Map<String, dynamic>> _ratings;
-  
+
   @HiveField(7)
   int _ratingsCount;
-  
+
   @HiveField(8)
   int _added;
-  
+
   @HiveField(9)
   Map<String, int> _addedByStatus;
-  
+
   @HiveField(10)
   int _metacritic;
-  
+
   @HiveField(11)
   int _playtime;
-  
+
   @HiveField(12)
   int _suggestionsCount;
-  
+
   @HiveField(13)
   String _updated;
-  
+
   @HiveField(14)
   int _reviewsCount;
-  
+
   @HiveField(15)
   List<Map<String, dynamic>> _platforms;
-  
+
   @HiveField(16)
   List<Map<String, dynamic>> _parentPlatforms;
-  
+
   @HiveField(17)
   List<Map<String, dynamic>> _genres;
-  
+
   @HiveField(18)
   List<Map<String, dynamic>> _stores;
-  
+
   @HiveField(19)
   List<Map<String, dynamic>> _tags;
-  
+
   @HiveField(20)
   bool _saved;
 
@@ -90,27 +90,27 @@ class GameModel extends HiveObject {
     List<Map<String, dynamic>>? stores,
     List<Map<String, dynamic>>? tags,
     bool? saved,
-  }) : _id = id ?? 0,
-       _name = name ?? '',
-       _released = released ?? '',
-       _announced = announced ?? false,
-       _backgroundImage = backgroundImage ?? '',
-       _rating = rating ?? 0.0,
-       _ratings = ratings ?? [],
-       _ratingsCount = ratingsCount ?? 0,
-       _added = added ?? 0,
-       _addedByStatus = addedByStatus ?? {},
-       _metacritic = metacritic ?? 0,
-       _playtime = playtime ?? 0,
-       _suggestionsCount = suggestionsCount ?? 0,
-       _updated = updated ?? '',
-       _reviewsCount = reviewsCount ?? 0,
-       _platforms = platforms ?? [],
-       _parentPlatforms = parentPlatforms ?? [],
-       _genres = genres ?? [],
-       _stores = stores ?? [],
-       _tags = tags ?? [],
-       _saved = saved ?? false;
+  })  : _id = id ?? 0,
+        _name = name ?? '',
+        _released = released ?? '',
+        _announced = announced ?? false,
+        _backgroundImage = backgroundImage ?? '',
+        _rating = rating ?? 0.0,
+        _ratings = ratings ?? [],
+        _ratingsCount = ratingsCount ?? 0,
+        _added = added ?? 0,
+        _addedByStatus = addedByStatus ?? {},
+        _metacritic = metacritic ?? 0,
+        _playtime = playtime ?? 0,
+        _suggestionsCount = suggestionsCount ?? 0,
+        _updated = updated ?? '',
+        _reviewsCount = reviewsCount ?? 0,
+        _platforms = platforms ?? [],
+        _parentPlatforms = parentPlatforms ?? [],
+        _genres = genres ?? [],
+        _stores = stores ?? [],
+        _tags = tags ?? [],
+        _saved = saved ?? false;
 
   // Getters and Setters
   int get id => _id;
@@ -130,7 +130,7 @@ class GameModel extends HiveObject {
   int get ratingsCount => _ratingsCount;
 
   int get added => _added;
-  
+
   Map<String, int> get addedByStatus => Map.from(_addedByStatus);
 
   int get metacritic => _metacritic;
@@ -156,7 +156,10 @@ class GameModel extends HiveObject {
   bool get saved => _saved;
   set saved(bool value) {
     _saved = value;
-    save();
+    try {
+      save();
+    // ignore: empty_catches
+    }catch (e) {}
   }
 
   // Computed getters
@@ -234,7 +237,8 @@ class GameModel extends HiveObject {
       updated: json['updated'] ?? "",
       reviewsCount: json['reviews_count'] ?? 0,
       platforms: List<Map<String, dynamic>>.from(json['platforms'] ?? []),
-      parentPlatforms: List<Map<String, dynamic>>.from(json['parent_platforms'] ?? []),
+      parentPlatforms:
+          List<Map<String, dynamic>>.from(json['parent_platforms'] ?? []),
       genres: List<Map<String, dynamic>>.from(json['genres'] ?? []),
       stores: List<Map<String, dynamic>>.from(json['stores'] ?? []),
       tags: List<Map<String, dynamic>>.from(json['tags'] ?? []),

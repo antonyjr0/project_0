@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:project_0/api/GameApi.dart';
 import 'package:project_0/database/game_hive_service.dart';
 import 'package:project_0/models/GameModel.dart';
@@ -25,7 +26,7 @@ class GameDao {
         'totalCount': responseData['count'],
       };
     } catch (e) {
-      print('❌ Errore API, carico dati offline: $e');
+      debugPrint('❌ Errore API, carico dati offline: $e');
       
       // Se l'API fallisce, carica solo i dati locali
       final offlineGames = GameHiveService.getAllGames();

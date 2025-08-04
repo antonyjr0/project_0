@@ -6,11 +6,16 @@ class GameApi {
   static final Dio _dio = Dio();
 
   Future<Map<String, dynamic>> getGames(int page, int pageSize) async {
+    final now = DateTime.now();
+    final today =
+        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+
     final response = await _dio.get('$baseUrl/games', queryParameters: {
       'key': dotenv.env['API_KEY'],
       'page_size': pageSize,
       'page': page,
-      'ordering': '-released' // Cambiato da 'released' a '-released'
+      'ordering': '-released',
+      'dates': '1970-01-01,$today', // Dalla prima data possibile fino ad oggi
     });
     if (response.statusCode != 200) {
       throw Exception('Failed to load games');
