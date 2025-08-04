@@ -202,7 +202,7 @@ class _HomeState extends State<Home> {
 class GameCard extends StatelessWidget {
   final GameModel game;
   
-  const GameCard({Key? key, required this.game}) : super(key: key);
+  const GameCard({super.key, required this.game});
   
   @override
   Widget build(BuildContext context) {
@@ -210,11 +210,11 @@ class GameCard extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
         contentPadding: EdgeInsets.all(16),
-        leading: game.backgroundImage != null
+        leading: game.backgroundImage != ""
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  game.backgroundImage!,
+                  game.backgroundImage,
                   width: 60,
                   height: 60,
                   fit: BoxFit.cover,
@@ -288,7 +288,7 @@ class GameCard extends StatelessWidget {
 class LoadingMoreIndicator extends StatelessWidget {
   final bool isLoading;
   
-  const LoadingMoreIndicator({Key? key, required this.isLoading}) : super(key: key);
+  const LoadingMoreIndicator({super.key, required this.isLoading});
   
   @override
   Widget build(BuildContext context) {
