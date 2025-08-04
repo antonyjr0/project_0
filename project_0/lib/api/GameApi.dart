@@ -27,4 +27,27 @@ class GameApi {
       'previous': response.data['previous'],
     };
   }
+
+  Future<Map<String, dynamic>> getAnnouncedGames(int page, int pageSize) async {
+    final now = DateTime.now();
+    final today =
+        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+    final response = await _dio.get('$baseUrl/games', queryParameters: {
+      'key': dotenv.env['API_KEY'],'page_size': pageSize,
+      'page': page,
+      'ordering': '-released',
+      'dates': '$today, 2100-01-01',
+    });
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load games');
+    }
+
+    return {
+      'results': response.data['results'],
+      'count': response.data['count'],
+      'next': response.data['next'],
+      'previous': response.data['previous'],
+    };
+  }
 }

@@ -185,39 +185,6 @@ class GameModel extends HiveObject {
     return 'Unrated';
   }
 
-  // Utility methods
-  void addRating(Map<String, dynamic> rating) {
-    _ratings.add(rating);
-    save();
-  }
-
-  void removeRating(int index) {
-    if (index >= 0 && index < _ratings.length) {
-      _ratings.removeAt(index);
-      save();
-    }
-  }
-
-  void addPlatform(Map<String, dynamic> platform) {
-    _platforms.add(platform);
-    save();
-  }
-
-  void addGenre(Map<String, dynamic> genre) {
-    _genres.add(genre);
-    save();
-  }
-
-  void addStore(Map<String, dynamic> store) {
-    _stores.add(store);
-    save();
-  }
-
-  void addTag(Map<String, dynamic> tag) {
-    _tags.add(tag);
-    save();
-  }
-
   // Factory constructor per creare da JSON
   factory GameModel.fromJson(Map<String, dynamic> json) {
     return GameModel(

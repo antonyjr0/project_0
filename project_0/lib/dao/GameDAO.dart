@@ -50,6 +50,47 @@ class GameDao {
     }
   }
   
+  Future<Map<String, dynamic>> fetchAnnouncedGames({
+    int page = 1,
+    int pageSize = 20,
+  }) async {
+    try {
+      final responseData = await _instance.getAnnouncedGames(page, pageSize);
+      final List<dynamic> gamesJson = responseData['results'];
+      final games = gamesJson.map((json) => GameModel.fromJson(json)).toList();
+      
+      // Merge con i dati locali per mantenere le preferenze
+      final mergedGames = await GameHiveService.mergeWithApiData(games);
+      
+      return {
+        'games': mergedGames,
+        'hasNext': responseData['next'] != null,
+        'totalCount': responseData['count'],
+      };
+    } catch (e) {
+      debugPrint('❌ Errore API, carico dati offline: $e');
+      
+      // Se l'API fallisce, carica solo i dati locali
+      final offlineGames = GameHiveService.getAllGames();
+      
+      // Simula paginazione sui dati offline
+      final startIndex = (page - 1) * pageSize;
+      final endIndex = startIndex + pageSize;
+      
+      final paginatedGames = offlineGames.length > startIndex
+          ? offlineGames.sublist(
+              startIndex,
+              endIndex > offlineGames.length ? offlineGames.length : endIndex,
+            )
+          : <GameModel>[];
+      
+      return {
+        'games': paginatedGames,
+        'hasNext': endIndex < offlineGames.length,
+        'totalCount': offlineGames.length,
+      };
+    }
+  }
   // Metodo per salvare/rimuovere dai preferiti
   Future<void> toggleFavorite(GameModel game) async {
     if (game.saved) {
