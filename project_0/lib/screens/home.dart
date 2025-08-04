@@ -18,6 +18,7 @@ class _HomeState extends State<Home> {
   bool _isLoadingMore = false;
   bool _hasMore = true;
   int _currentPage = 1;
+  int? _totalCount;
   
   // Ottimizzazioni performance
   static const double _scrollThreshold = 0.8;
@@ -57,20 +58,24 @@ class _HomeState extends State<Home> {
       _currentPage = 1;
       _hasMore = true;
       _isNearBottom = false;
+      _totalCount = null;
     });
     
     try {
-      final newGames = await _gameDao.fetchGames(
+      final result = await _gameDao.fetchGames(
         page: _currentPage,
         pageSize: _pageSize,
       );
       
       if (mounted) {
         setState(() {
-          _games = newGames;
-          _hasMore = newGames.length >= _pageSize;
+          _games = result['games'];
+          _hasMore = result['hasNext'];
+          _totalCount = result['totalCount'];
           _isLoading = false;
         });
+        
+        debugPrint('Caricati ${_games.length} giochi. HasMore: $_hasMore. Total: $_totalCount');
       }
     } catch (e) {
       if (mounted) {
@@ -81,28 +86,37 @@ class _HomeState extends State<Home> {
   }
   
   Future<void> _loadMoreGames() async {
-    if (_isLoadingMore || !_hasMore || _isLoading) return;
+    if (_isLoadingMore || !_hasMore || _isLoading) {
+      debugPrint('Skip loadMore: loading=$_isLoadingMore, hasMore=$_hasMore, isLoading=$_isLoading');
+      return;
+    }
     
     setState(() => _isLoadingMore = true);
     
     try {
-      final newGames = await _gameDao.fetchGames(
+      final result = await _gameDao.fetchGames(
         page: _currentPage + 1,
         pageSize: _pageSize,
       );
       
       if (mounted) {
+        final newGames = result['games'] as List<GameModel>;
+        
         setState(() {
           _games.addAll(newGames);
           _currentPage++;
-          _hasMore = newGames.length >= _pageSize;
+          _hasMore = result['hasNext'];
           _isLoadingMore = false;
         });
+        
+        debugPrint('Caricata pagina $_currentPage. Nuovi giochi: ${newGames.length}. Totale: ${_games.length}. HasMore: $_hasMore');
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isLoadingMore = false);
+        _showError('Failed to load more games: $e');
       }
+      debugPrint('Errore nel caricamento pagina ${_currentPage + 1}: $e');
     }
   }
   
@@ -122,7 +136,17 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Game Discovery'),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Game Discovery'),
+            if (_totalCount != null)
+              Text(
+                '${_games.length} of $_totalCount games',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+              ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
@@ -199,6 +223,7 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 }
+
 class GameCard extends StatelessWidget {
   final GameModel game;
   
@@ -272,19 +297,12 @@ class GameCard extends StatelessWidget {
         ),
         onTap: () {
           // Navigazione ai dettagli
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => GameDetailScreen(game: game),
-          //   ),
-          // );
         },
       ),
     );
   }
 }
 
-// Widget per loading indicator
 class LoadingMoreIndicator extends StatelessWidget {
   final bool isLoading;
   
